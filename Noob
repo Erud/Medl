@@ -12,3 +12,5 @@ FORMAT FS=FAT32 QUICK
 ASSIGN
 EXIT
 Unzip Recalbox.zip to the USB
+
+also https://jeremylindsayni.wordpress.com/2016/05/02/windows-10-iot-and-the-raspberry-pi-3-installation-failure-and-eventually-success/
