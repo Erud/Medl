@@ -1,0 +1,14 @@
+This is the solution that worked for me to resolve the "Error: Resizing Existing FAT Partition" message
+
+Open Command prompt with administrative privileges
+DISKPART
+LIST DISK (You need this to find the Disk # of your USB Drive. On most machines, it will be "Disk 1”)
+SELECT DISK 1
+CLEAN
+CREATE PARTITION PRIMARY
+SELECT PARTITION 1
+ACTIVE
+FORMAT FS=FAT32 QUICK
+ASSIGN
+EXIT
+Unzip Recalbox.zip to the USB
