@@ -207,5 +207,11 @@ An remote desktop session to server01 will be created using the credentials of c
 
 #   wmic qfe list
 $Cred = Get-Credential 'medline-nt\pa-erudakov'
-#Get-Content C:\Temp\servE.txt | Connect-Mstsc -Wait -User 'medline-nt\pa-erudakov'
-Get-Content C:\Temp\compEcDEV1.txt | Connect-Mstsc -Wait -Credential $Cred
+#Get-Content C:\Temp\servE.txt | Connect-Mstsc -Wait -User 'medline-nt\pa-erudakov' -ComputerName
+#Get-Content C:\Temp\compEcDEV1.txt | Connect-Mstsc -Wait -Credential $Cred
+$computers = Get-Content C:\Temp\ECT_to_add_new_local_Adm_serversGroups.txt
+foreach ($comp in $computers) {
+	if ($comp.Length -gt 0) {
+		Connect-Mstsc -Wait -Credential $Cred -ComputerName $comp
+	}
+} 

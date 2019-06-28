@@ -1,7 +1,8 @@
 ﻿
-$computers = $env:COMPUTERNAME
-$outpath = "c:\temp\localaudit_$computers.csv"
-$outErrPath = "c:\temp\ErrComp.txt"
+#$computers = $env:COMPUTERNAME
+$computers = Get-Content 'C:\Temp\Exchange ServersE.txt'
+$outpath = "c:\temp\Exchange ServerEs.csv"
+$outErrPath = "c:\temp\Exchange ServersError.txt"
 if (Test-Path $outpath -PathType Leaf ) {
 	Remove-Item -path $outpath
 }
@@ -34,6 +35,7 @@ $userflags_enum = @{
 
 #
 foreach ($comp in $computers) {
+    $comp
 	$aline = $null
 	$aline =@()
 	if(Test-Connection -Cn $comp -BufferSize 16 -Count 1 -ErrorAction 0 -quiet){

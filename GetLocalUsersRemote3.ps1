@@ -1,7 +1,7 @@
 ﻿
-$computers = get-content c:\temp\computers.txt
-$outpath = "c:\temp\localaudit2.csv"
-$outErrPath = "c:\temp\ErrComp.txt"
+$computers = get-content 'C:\temp\Exchange ServersE.txt'
+$outpath = "c:\temp\Exchange ServersE.csv"
+$outErrPath = "c:\temp\Exchange ServersError.txt"
 if (Test-Path $outpath -PathType Leaf ) {
 	Remove-Item -path $outpath
 }
@@ -34,68 +34,71 @@ $userflags_enum = @{
 
 #
 foreach ($comp in $computers) {
+    $comp
 	$aline = $null
 	$aline =@()
-	if(Test-Connection -Cn $comp -BufferSize 16 -Count 1 -ErrorAction 0 -quiet){
-		[ADSI]$S = "WinNT://$($comp)"
-		$groups = $S.children.where({$_.class -eq 'group'}) 
-		foreach ($groupO in $groups) {
-			[ADSI]$group = "$($groupO.Parent)/$($groupO.Name),group"
-			$members = $Group.psbase.Invoke("Members")
-			$emt = $true
-			$members | ForEach-Object {
-				$path = ($_.GetType().InvokeMember("Adspath", 'GetProperty', $null, $_, $null)) -replace "WinNT://",""
-				$apath = $path -split ("/",3)
-				$mclass = $_.GetType().InvokeMember("Class", 'GetProperty', $null, $_, $null)
-				if ($apath[1] -eq $comp) {
-					$path = $apath[1] + "/" + $apath[2]
-					if ($mclass -eq "User") {
-						$Flags = $_.GetType().InvokeMember("userFlags", 'GetProperty', $null, $_, $null)
-						$cflags = " " 
-						$enumFlags = $userflags_enum.GetEnumerator()
-						foreach ($enumFlag in $enumFlags) { 
-							if ( $enumFlag.Value -band $Flags ) {
-								if ($cflags -ne " ") { $cflags += ";" } 			
-								$cflags += $enumFlag.name
+	if ($comp.Length -gt 0) {
+		if(Test-Connection -Cn $comp -BufferSize 16 -Count 1 -ErrorAction 0 -quiet){
+			[ADSI]$S = "WinNT://$($comp)"
+			$groups = $S.children.where({$_.class -eq 'group'}) 
+			foreach ($groupO in $groups) {
+				[ADSI]$group = "$($groupO.Parent)/$($groupO.Name),group"
+				$members = $Group.psbase.Invoke("Members")
+				$emt = $true
+				$members | ForEach-Object {
+					$path = ($_.GetType().InvokeMember("Adspath", 'GetProperty', $null, $_, $null)) -replace "WinNT://",""
+					$apath = $path -split ("/",3)
+					$mclass = $_.GetType().InvokeMember("Class", 'GetProperty', $null, $_, $null)
+					if ($apath[1] -eq $comp) {
+						$path = $apath[1] + "/" + $apath[2]
+						if ($mclass -eq "User") {
+							$Flags = $_.GetType().InvokeMember("userFlags", 'GetProperty', $null, $_, $null)
+							$cflags = " " 
+							$enumFlags = $userflags_enum.GetEnumerator()
+							foreach ($enumFlag in $enumFlags) { 
+								if ( $enumFlag.Value -band $Flags ) {
+									if ($cflags -ne " ") { $cflags += ";" } 			
+									$cflags += $enumFlag.name
+								}
 							}
 						}
+					} else {$cflags = ""}
+					$line =[ordered] @{
+						"Computer" = $comp
+						"Group Name" =$group.name.value
+						"Group Description" = $group.Description.value
+						"Member Name" = $_.GetType().InvokeMember("Name", 'GetProperty', $null, $_, $null)
+						"Member Flags" = $cflags
+						"Member Class" = $mclass
+						"Member Path" = $path
 					}
-				} else {$cflags = ""}
-				$line =[ordered] @{
-					"Computer" = $comp
-					"Group Name" =$group.name.value
-					"Group Description" = $group.Description.value
-					"Member Name" = $_.GetType().InvokeMember("Name", 'GetProperty', $null, $_, $null)
-					"Member Flags" = $cflags
-					"Member Class" = $mclass
-					"Member Path" = $path
+					$aline += New-Object -Property $line -TypeName PSObject
+					$emt = $false
 				}
-				$aline += New-Object -Property $line -TypeName PSObject
-				$emt = $false
+				if ($emt){
+					$line =[ordered] @{
+						"Computer" = $comp
+						"Group Name" =$group.name.value
+						"Group Description" = $group.Description.value
+						"Member Name" = ""
+						"Member Flags" = ""
+						"Member Class" = ""
+						"Member Path" = ""
+					}
+					$aline += New-Object -Property $line -TypeName PSObject
+				}
 			}
-			if ($emt){
-				$line =[ordered] @{
-					"Computer" = $comp
-					"Group Name" =$group.name.value
-					"Group Description" = $group.Description.value
-					"Member Name" = ""
-					"Member Flags" = ""
-					"Member Class" = ""
-					"Member Path" = ""
-				}
-				$aline += New-Object -Property $line -TypeName PSObject
+			if ($aline.Count -gt "0") {
+				$aline | select "Computer","Group Description","Group Name","Member Name","Member Flags","Member Class","Member Path" |
+				Export-CSV -path $outpath –notypeinformation -Append
+			} 
+			else { 
+				Out-File -FilePath $outErrPath -InputObject $comp -Append
 			}
 		}
-		if ($aline.Count -gt "0") {
-			$aline | select "Computer","Group Description","Group Name","Member Name","Member Flags","Member Class","Member Path" |
-			Export-CSV -path c:\temp\localaudit2.csv –notypeinformation -Append
-		} 
-		else { 
+		else {
+			$comp += " No Ping" 
 			Out-File -FilePath $outErrPath -InputObject $comp -Append
 		}
-	}
-	else {
-		$comp += " No Ping" 
-		Out-File -FilePath $outErrPath -InputObject $comp -Append
 	}
 }
