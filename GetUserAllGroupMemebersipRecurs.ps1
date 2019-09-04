@@ -1,0 +1,2 @@
+﻿$DN = (Get-ADUser -Identity mmockenh -Properties DistinguishedName).DistinguishedName
+Get-ADGroup -LDAPFilter "(member:1.2.840.113556.1.4.1941:=$($DN))" | Export-Csv c:\temp\mmockenh_groups1.csv -NoTypeInformation
