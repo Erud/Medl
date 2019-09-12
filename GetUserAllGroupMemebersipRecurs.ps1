@@ -1,2 +1,2 @@
-﻿$DN = (Get-ADUser -Identity mmockenh -Properties DistinguishedName).DistinguishedName
-Get-ADGroup -LDAPFilter "(member:1.2.840.113556.1.4.1941:=$($DN))" | Export-Csv c:\temp\mmockenh_groups1.csv -NoTypeInformation
+﻿$DN = (Get-ADUser -Identity pa-nicholas.refalo -Properties DistinguishedName).DistinguishedName
+Get-ADGroup -LDAPFilter "(member:1.2.840.113556.1.4.1941:=$($DN))" | Export-Csv c:\temp\pa-nicholas.refalo_groups1.csv -NoTypeInformation

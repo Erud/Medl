@@ -1,0 +1,1 @@
+﻿Get-DhcpServerv4OptionValue -ComputerName munhrd1.medline.com -OptionId 6

@@ -1,8 +1,8 @@
 ﻿
 #$computers = "AUS01PRN02.medline.com" <#$env:COMPUTERNAME#>
-$computers = Get-Content 'C:\Temp\MUNservers.txt'
-$outpath = "c:\temp\MUN Servers.csv"
-$outErrPath = "c:\temp\MUN ServersError.txt"
+$computers = Get-Content 'C:\Temp\NeptServers1.txt'
+$outpath = "c:\temp\NeptServers1.csv"
+$outErrPath = "c:\temp\NeptServers1Error.txt"
 if (Test-Path $outpath -PathType Leaf ) {
 	Remove-Item -path $outpath
 }
