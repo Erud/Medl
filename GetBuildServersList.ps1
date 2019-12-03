@@ -7,7 +7,7 @@ $servers = Get-ChildItem -Path Z:
 $names = @()
 foreach($server in $servers){
 	$name = ($server.Name).ToLower()
-	$l = $name.IndexOf("decom")
+	$l = $name.IndexOf("build")
 	if($l -le 1){
 		$first = ($server.name).Substring(0,$name.Length - 5)
 	}

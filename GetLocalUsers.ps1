@@ -1,8 +1,10 @@
 ﻿
 #$computers = "AUS01PRN02.medline.com" <#$env:COMPUTERNAME#>
-$computers = Get-Content 'C:\Temp\NeptServers1.txt'
-$outpath = "c:\temp\NeptServers1.csv"
-$outErrPath = "c:\temp\NeptServers1Error.txt"
+$name = "SQLservers1"
+$computers = get-content "c:\temp\SQL_Admin\$name.txt"
+$outpath = "C:\Temp\SQL_Admin\$name" + "OK.csv"
+$outErrPath = "C:\Temp\SQL_Admin\$name" + "Error.txt"
+
 if (Test-Path $outpath -PathType Leaf ) {
 	Remove-Item -path $outpath
 }
@@ -35,7 +37,8 @@ $userflags_enum = @{
 
 #
 foreach ($comp in $computers) {
-    $comp
+	$comp = $comp.Trim()
+	$comp
 	$aline = $null
 	$aline =@()
 	if(Test-Connection -Cn $comp -BufferSize 16 -Count 1 -ErrorAction 0 -quiet){
@@ -93,6 +96,7 @@ foreach ($comp in $computers) {
 			Export-CSV -path $outpath –notypeinformation -Append
 		} 
 		else { 
+            $comp += " No data"
 			Out-File -FilePath $outErrPath -InputObject $comp -Append
 		}
 	}
