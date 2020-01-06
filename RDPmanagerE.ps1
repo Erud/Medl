@@ -221,7 +221,7 @@ An remote desktop session to server01 will be created using the credentials of c
 			else {
 				#Write-Error "$($Computer): Offline"
 				#Write-Host "$($Computer): Offline" -ForegroundColor red
-				$tm = (get-date).ToString('T')
+				$tm = (get-date).ToString('HH:mm:ss')
 				$list_Log.Items.Add("$tm  ---> Offline $($list_favs.SelectedItem)")
 			}
 		}
@@ -251,7 +251,12 @@ Function Save-Favs {
 
 Function Start-RDP ($computername){    
 	#Start-Process "$env:windir\system32\mstsc.exe" -ArgumentList "/v:$computername"
-	Connect-Mstsc -Credential $Cred -ComputerName $computername
+	If ($checkbox1.Checked -eq $true) {
+		Connect-Mstsc -Credential $Cred -ComputerName $computername -Admin
+	}
+	else {
+		Connect-Mstsc -Credential $Cred -ComputerName $computername
+	}
 }
 
 Function Get-AllDCs {
@@ -289,7 +294,7 @@ $listBox_DrawItem={
 	}
 	$e.Graphics.DrawString($lbItem, $e.Font, [System.Drawing.SystemBrushes]::ControlText, (new-object System.Drawing.PointF($e.Bounds.X, $e.Bounds.Y)))
 }   
-  
+
 
 #region begin GUI{ 
 
@@ -351,6 +356,12 @@ $txt_addFav.height               = 20
 $txt_addFav.location             = New-Object System.Drawing.Point(302,74)
 $txt_addFav.Font                 = 'Microsoft Sans Serif,10'
 
+$checkbox1 = new-object System.Windows.Forms.checkbox
+$checkbox1.Location = new-object System.Drawing.Size(304,115)
+$checkbox1.Size = new-object System.Drawing.Size(304,125)
+$checkbox1.Text = "admin"
+$checkbox1.Checked = $false 
+
 $Label3                          = New-Object system.Windows.Forms.Label
 $Label3.text                     = "Select from above, or enter hostname manually"
 $Label3.AutoSize                 = $true
@@ -360,7 +371,7 @@ $Label3.location                 = New-Object System.Drawing.Point(300,109)
 $Label3.Font                     = 'Microsoft Sans Serif,8'
 
 $btn_launch                      = New-Object system.Windows.Forms.Button
-$btn_launch.text                 = "Launch RDP for Fav"
+$btn_launch.text                 = "Launch RDP"
 $btn_launch.width                = 250
 $btn_launch.height               = 30
 $btn_launch.location             = New-Object System.Drawing.Point(317,310)
@@ -382,7 +393,7 @@ $list_Log.Add_DrawItem($listBox_DrawItem)
 #$list_Log.DrawMode               = 'OwnerDrawFixed'
 #$list_Log.FormattingEnabled      = $True
 
-$rdpManager.controls.AddRange(@($Label1,$cmb_allDCs,$Label2,$btn_AddToFavs,$btn_NewPass,$btn_removeFav,$txt_addFav,$Label3,$btn_launch,$list_favs,$list_Log))
+$rdpManager.controls.AddRange(@($Label1,$cmb_allDCs,$Label2,$btn_AddToFavs,$btn_NewPass,$btn_removeFav,$txt_addFav,$Label3,$btn_launch,$list_favs,$list_Log,$checkbox1))
 
 #region gui events {
 $btn_NewPass.Add_Click({
@@ -392,14 +403,23 @@ $btn_NewPass.Add_Click({
 	New-AnyBoxPrompt -Group 'Connection Info' -Message 'Password:' -InputType Password
 	)
 	$ans.Input_1 | convertfrom-securestring | out-file C:\temp\cred.txt
-	$tm = (get-date).ToString('T')
+	$password = get-content C:\temp\cred.txt | convertto-securestring
+	$Cred = new-object -typename System.Management.Automation.PSCredential -argumentlist "medline-nt\pa-erudakov",$password
+	$tm = (get-date).ToString('HH:mm:ss')
 	$list_Log.Items.Add("$tm  Password for $($ans.Input_0) updated")
 })
 
 $btn_launch.Add_Click({
-	Start-RDP($list_favs.SelectedItem)
-	$tm = (get-date).ToString('T')
-	$list_Log.Items.Add("$tm  Launching RDP for $($list_favs.SelectedItem)")
+	$tm = (get-date).ToString('HH:mm:ss')
+	if ($list_favs.SelectedItem){  
+		Start-RDP($list_favs.SelectedItem)
+		$list_Log.Items.Add("$tm  Launching RDP for $($list_favs.SelectedItem)")
+		if ($list_favs.SelectedIndex -gt 0) {
+			$list_favs.SelectedIndex = -1 }
+	} Else {
+		Start-RDP($txt_addFav.Text)
+		$list_Log.Items.Add("$tm  Launching RDP for $($txt_addFav.Text)")
+	}
 })
 $btn_removeFav.Add_Click({    
 	$list_favs.Items.RemoveAt($list_favs.SelectedIndex)
@@ -429,7 +449,7 @@ $txt_addFav.Add_KeyUp({
 $rdpManager.Add_Load({ Load-Favs; Get-AllDCs })
 $list_favs.Add_DoubleClick({
 	Start-RDP($list_favs.SelectedItem)
-	$tm = (get-date).ToString('T')
+	$tm = (get-date).ToString('HH:mm:ss')
 	#	Write-Host "Launching RDP for $($list_favs.SelectedItem)"
 	$list_Log.Items.Add("$tm  Launching RDP for $($list_favs.SelectedItem)")
 })
