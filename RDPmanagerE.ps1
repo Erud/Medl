@@ -1,7 +1,7 @@
 ﻿# PowerShell RDP Manager
 # Version: 1.1
 # Created: 2018-06-28
-# Modified: 20-18-07-02
+# Modified: 2/6/20 EER
 #=====================================================
 $RDPFavs = "$env:USERPROFILE\Desktop\RDPFavs.json"
 Import-Module AnyBox
@@ -299,7 +299,7 @@ $listBox_DrawItem={
 #region begin GUI{ 
 
 $rdpManager                      = New-Object system.Windows.Forms.Form
-$rdpManager.ClientSize           = '600,455'
+$rdpManager.ClientSize           = '600,465'
 $rdpManager.text                 = "RDP Manager"
 $rdpManager.TopMost              = $false
 $rdpManager.icon                 = 'C:\Users\erudakov\Documents\PS\favicon.ico'
@@ -403,7 +403,7 @@ $btn_NewPass.Add_Click({
 	New-AnyBoxPrompt -Group 'Connection Info' -Message 'Password:' -InputType Password
 	)
 	$ans.Input_1 | convertfrom-securestring | out-file C:\temp\cred.txt
-	$password = get-content C:\temp\cred.txt | convertto-securestring
+	$password = $ans.Input_1
 	$Cred = new-object -typename System.Management.Automation.PSCredential -argumentlist "medline-nt\pa-erudakov",$password
 	$tm = (get-date).ToString('HH:mm:ss')
 	$list_Log.Items.Add("$tm  Password for $($ans.Input_0) updated")
@@ -446,7 +446,12 @@ $txt_addFav.Add_KeyUp({
 	}
 })
 
-$rdpManager.Add_Load({ Load-Favs; Get-AllDCs })
+$rdpManager.Add_Load({ 
+	Load-Favs; Get-AllDCs
+})
+$list_favs.Add_SelectedIndexChanged({
+	$txt_addFav.Text = $list_favs.SelectedItem
+})
 $list_favs.Add_DoubleClick({
 	Start-RDP($list_favs.SelectedItem)
 	$tm = (get-date).ToString('HH:mm:ss')
