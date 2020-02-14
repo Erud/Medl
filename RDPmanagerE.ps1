@@ -458,6 +458,11 @@ $list_favs.Add_DoubleClick({
 	#	Write-Host "Launching RDP for $($list_favs.SelectedItem)"
 	$list_Log.Items.Add("$tm  Launching RDP for $($list_favs.SelectedItem)")
 })
+$list_Log.Add_DoubleClick({
+    $alist = $list_Log.SelectedItem.Split(' ')
+	$txt_addFav.Text = $alist[$alist.Count-1]
+	
+})
 #endregion events }
 
 #endregion GUI }
