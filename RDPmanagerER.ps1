@@ -554,14 +554,16 @@ $btn_NewPass.Add_Click({
 
 $btn_launch.Add_Click({
 	$tm = (get-date).ToString('HH:mm:ss')
-	if ($list_favs.SelectedItem){  
+	if (($list_favs.SelectedItem) -and ($txt_addFav.Text.Length -eq 0)){  
 		Start-RDP($list_favs.SelectedItem)
 		$list_Log.Items.Add("$tm  Launching RDP for $($list_favs.SelectedItem)")
 		if ($list_favs.SelectedIndex -gt 0) {
 			$list_favs.SelectedIndex = -1 }
 	} Else {
-		Start-RDP($txt_addFav.Text)
-		$list_Log.Items.Add("$tm  Launching RDP for $($txt_addFav.Text)")
+		If ($txt_addFav.Text.Length -gt 0){
+			Start-RDP($txt_addFav.Text)
+			$list_Log.Items.Add("$tm  Launching RDP for $($txt_addFav.Text)")
+		}
 	}
 })
 $btn_removeFav.Add_Click({    
@@ -587,12 +589,15 @@ $txt_addFav.Add_KeyUp({
 			$txt_addFav.Text = ""
 		}
 	}
+	#$list_Log.ClearSelected()
+	#$list_favs.ClearSelected()
 })
 
 $rdpManager.Add_Load({ 
 	Load-Favs; Get-AllDCs
 })
 $list_favs.Add_SelectedIndexChanged({
+	#Add_SelectedIndexChanged
 	$txt_addFav.Text = $list_favs.SelectedItem
 })
 $list_favs.Add_DoubleClick({
@@ -600,10 +605,12 @@ $list_favs.Add_DoubleClick({
 	$tm = (get-date).ToString('HH:mm:ss')
 	#	Write-Host "Launching RDP for $($list_favs.SelectedItem)"
 	$list_Log.Items.Add("$tm  Launching RDP for $($list_favs.SelectedItem)")
+	$list_favs.ClearSelected();
 })
 $list_Log.Add_DoubleClick({
 	$alist = $list_Log.SelectedItem.Split(' ')
 	$txt_addFav.Text = $alist[$alist.Count-1]
+	$list_Log.ClearSelected();
 	
 })
 #endregion events }
