@@ -332,40 +332,36 @@ Function Connect-Mstsc {
 	}
 	process {
 		foreach ($Computer in $ComputerName) {
-			if(Test-Connection -Cn $Computer -BufferSize 16 -Count 1 -ErrorAction 0 -quiet){
-				$ProcessInfo = New-Object System.Diagnostics.ProcessStartInfo
-				$Process = New-Object System.Diagnostics.Process
-				
-				# Remove the port number for CmdKey otherwise credentials are not entered correctly
-				if ($Computer.Contains(':')) {
-					$ComputerCmdkey = ($Computer -split ':')[0]
-				} else {
-					$ComputerCmdkey = $Computer
-				}
-				
-				$ProcessInfo.FileName    = "$($env:SystemRoot)\system32\cmdkey.exe"
-				$ProcessInfo.Arguments   = "/generic:TERMSRV/$ComputerCmdkey /user:$User /pass:$($Password)"
-				$ProcessInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden
-				$Process.StartInfo = $ProcessInfo
-				if ($PSCmdlet.ShouldProcess($ComputerCmdkey,'Adding credentials to store')) {
-					[void]$Process.Start()
-				}
-				
-				$ProcessInfo.FileName    = "$($env:SystemRoot)\system32\mstsc.exe"
-				$ProcessInfo.Arguments   = "$MstscArguments /v $Computer"
-				$ProcessInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Normal
-				$Process.StartInfo       = $ProcessInfo
-				if ($PSCmdlet.ShouldProcess($Computer,'Connecting mstsc')) {
-					[void]$Process.Start()
-					if ($Wait) {
-						$null = $Process.WaitForExit()
-					}       
-				}
-			} Else 
-			{
-				$tm = (get-date).ToString('HH:mm:ss')
-				$list_Log.Items.Add("$tm  ---> Offline $($list_favs.SelectedItem)")
+			
+			$ProcessInfo = New-Object System.Diagnostics.ProcessStartInfo
+			$Process = New-Object System.Diagnostics.Process
+			
+			# Remove the port number for CmdKey otherwise credentials are not entered correctly
+			if ($Computer.Contains(':')) {
+				$ComputerCmdkey = ($Computer -split ':')[0]
+			} else {
+				$ComputerCmdkey = $Computer
 			}
+			
+			$ProcessInfo.FileName    = "$($env:SystemRoot)\system32\cmdkey.exe"
+			$ProcessInfo.Arguments   = "/generic:TERMSRV/$ComputerCmdkey /user:$User /pass:$($Password)"
+			$ProcessInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden
+			$Process.StartInfo = $ProcessInfo
+			if ($PSCmdlet.ShouldProcess($ComputerCmdkey,'Adding credentials to store')) {
+				[void]$Process.Start()
+			}
+			
+			$ProcessInfo.FileName    = "$($env:SystemRoot)\system32\mstsc.exe"
+			$ProcessInfo.Arguments   = "$MstscArguments /v $Computer"
+			$ProcessInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Normal
+			$Process.StartInfo       = $ProcessInfo
+			if ($PSCmdlet.ShouldProcess($Computer,'Connecting mstsc')) {
+				[void]$Process.Start()
+				if ($Wait) {
+					$null = $Process.WaitForExit()
+				}       
+			}
+			
 		}
 	}
 }
@@ -392,12 +388,19 @@ Function Save-Favs {
 }
 
 Function Start-RDP ($computername){    
-	
-	If ($checkbox1.Checked -eq $true) {
-		Connect-Mstsc -Credential $Cred -ComputerName $computername -Admin
-	}
-	else {
-		Connect-Mstsc -Credential $Cred -ComputerName $computername
+	if(Test-Connection -Cn $computername -BufferSize 16 -Count 1 -ErrorAction 0 -quiet){
+		If ($checkbox1.Checked -eq $true) {
+			Connect-Mstsc -Credential $Cred -ComputerName $computername -Admin
+		}
+		else {
+			Connect-Mstsc -Credential $Cred -ComputerName $computername
+		}
+		$tm = (get-date).ToString('HH:mm:ss')
+		$list_Log.Items.Add("$tm  Launching RDP for $computername")
+	} Else 
+	{
+		$tm = (get-date).ToString('HH:mm:ss')
+		$list_Log.Items.Add("$tm  ---> Offline $computername")
 	}
 }
 
@@ -446,6 +449,7 @@ $rdpManager.text                 = "RDP Manager"
 $rdpManager.TopMost              = $false
 #$rdpManager.icon                = 'C:\Users\erudakov\Documents\PS\favicon.ico'
 $rdpManager.Icon                 = [System.Drawing.Icon]::FromHandle((New-Object System.Drawing.Bitmap -Argument $stream).GetHIcon())
+$rdpManager.WindowState          = "Normal"
 
 $Label1                          = New-Object system.Windows.Forms.Label
 $Label1.text                     = "Favorites"
@@ -556,13 +560,13 @@ $btn_launch.Add_Click({
 	$tm = (get-date).ToString('HH:mm:ss')
 	if (($list_favs.SelectedItem) -and ($txt_addFav.Text.Length -eq 0)){  
 		Start-RDP($list_favs.SelectedItem)
-		$list_Log.Items.Add("$tm  Launching RDP for $($list_favs.SelectedItem)")
+		#$list_Log.Items.Add("$tm  Launching RDP for $($list_favs.SelectedItem)")
 		if ($list_favs.SelectedIndex -gt 0) {
 			$list_favs.SelectedIndex = -1 }
 	} Else {
 		If ($txt_addFav.Text.Length -gt 0){
 			Start-RDP($txt_addFav.Text)
-			$list_Log.Items.Add("$tm  Launching RDP for $($txt_addFav.Text)")
+			#$list_Log.Items.Add("$tm  Launching RDP for $($txt_addFav.Text)")
 		}
 	}
 })
