@@ -1,0 +1,1 @@
+﻿Get-ChildItem "\\medline.com\files\M197\Users" -Filter “*$*”  | Rename-Item -NewName {$_.name -replace ‘$’,’’ } -WhatIf

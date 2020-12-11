@@ -16,7 +16,7 @@ $ProcessInfo.RedirectStandardError = $true
 $ProcessInfo.RedirectStandardOutput = $true 
 $ProcessInfo.UseShellExecute = $false
 #The line below is basically the command you want to run and it's passed as text, as an argument
-#$ProcessInfo.Arguments = $msc
+$ProcessInfo.Arguments = $msc
 #The next 3 lines are the credential for UserB, as you can see, we can't just pass $Credential
 $ProcessInfo.Username = $Credential.GetNetworkCredential().username
 $ProcessInfo.Domain = $Credential.GetNetworkCredential().Domain

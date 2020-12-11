@@ -1,4 +1,4 @@
-﻿$name = "W1"
+﻿$name = "W31"
 $computers = get-content "c:\temp\$name.txt"
 
 $password = get-content C:\temp\cred.txt | convertto-securestring
@@ -9,15 +9,17 @@ foreach ($comp in $computers) {
 	if (Test-Path k:) {
 		Remove-PSDrive -Name "K" -Force
 	}
-	
-	New-PSDrive -Name K -PSProvider FileSystem -Root "\\$comp\c$" -Persist -Credential $cred -Scope Global
-	if (Test-Path 'K:\Temp\WinCollectInstall') {
-		Remove-Item 'K:\Temp\WinCollectInstall' -Recurse
+	try {
+		New-PSDrive -Name K -PSProvider FileSystem -Root "\\$comp\c$" -Persist -Credential $cred -Scope Global -ErrorAction Stop
+		if (Test-Path 'K:\Temp\specops') {
+			Remove-Item 'K:\Temp\specops' -Recurse
+		}
+		if (-Not (Test-Path 'K:\Temp')) {
+			New-Item -Path "K:\" -Name "Temp" -ItemType "directory"
+		}
+		Copy-Item -Path "C:\Temp\specops" -Destination "K:\Temp\specops" -Recurse
+		
+		Remove-PSDrive -Name "K" -Force
 	}
-	if (-Not (Test-Path 'K:\Temp')) {
-		New-Item -Path "K:\" -Name "Temp" -ItemType "directory"
-	}
-	Copy-Item -Path "C:\Temp\WinCollectInstall\*" -Destination "K:\Temp\" -Recurse
-	
-	Remove-PSDrive -Name "K" -Force
+	catch { "ERROR >>> $comp " }
 }
