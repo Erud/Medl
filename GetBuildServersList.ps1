@@ -23,6 +23,6 @@ foreach($server in $servers){
 	$names += New-Object -Property $line -TypeName PSObject
 }
 
-$names | Export-Csv C:\Temp\build.csv -NoTypeInformation
+$names | Export-Csv C:\Temp\Build.csv -NoTypeInformation
 
 Remove-PSDrive -Name Z

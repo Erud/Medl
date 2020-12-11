@@ -1,7 +1,7 @@
 ﻿#$Credentials = Get-Credential domain\$env:username
 #$Credentials | Test-Cred
 #
-#Get-Credential | Test-Cred
+
 function Test-Cred {
 	
 	[CmdletBinding()]
@@ -66,11 +66,13 @@ function Test-Cred {
 	{
 		If ($domain.name -ne $null)
 		{
-			return "Authenticated"
+			return ">>> Authenticated"
 		}
 		Else
 		{
-			return "Not authenticated"
+			return "Not authenticated <<<"
 		}
 	}
 }
+
+Get-Credential | Test-Cred
