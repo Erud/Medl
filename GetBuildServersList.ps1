@@ -1,6 +1,8 @@
 ﻿#EER 10/15/2019 
 #[String]$WebDAVShare = '\\collaboration.medline.com@SSL\DavWWWRoot\sites\is\server\Decom tracking'
-[String]$WebDAVShare = '\\collaboration.medline.com@SSL\DavWWWRoot\sites\is\server\Build tracking'
+#[String]$WebDAVShare = '\\collaboration.medline.com@SSL\DavWWWRoot\sites\is\server\Build tracking'
+[String]$WebDAVShare = '\\collaboration.medline.com@SSL\DavWWWRoot\sites\is\seo\Build tracking'
+#https://collaboration.medline.com/sites/is/seo/Build%20tracking/Forms/AllItems.aspx
 New-PSDrive -Name Z -PSProvider FileSystem -Root $WebDAVShare
 
 $servers = Get-ChildItem -Path Z:
@@ -23,6 +25,6 @@ foreach($server in $servers){
 	$names += New-Object -Property $line -TypeName PSObject
 }
 
-$names | Export-Csv C:\Temp\Build.csv -NoTypeInformation
+$names | Export-Csv C:\Temp\BuildN.csv -NoTypeInformation
 
 Remove-PSDrive -Name Z

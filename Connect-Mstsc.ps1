@@ -179,7 +179,7 @@ An remote desktop session to server01 will be created using the credentials of c
 $Cred = Get-Credential 'medline-nt\pa-erudakov'
 #Get-Content C:\Temp\servE.txt | Connect-Mstsc -Wait -User 'medline-nt\pa-erudakov' -ComputerName
 #Get-Content C:\Temp\compEcDEV1.txt | Connect-Mstsc -Wait -Credential $Cred
-$computers = Get-Content C:\Temp\W2.txt
+$computers = Get-Content C:\Temp\W1.txt
 foreach ($comp in $computers) {
 	if ($comp.Length -gt 0) {
 		Connect-Mstsc -Wait -Credential $Cred -ComputerName $comp
