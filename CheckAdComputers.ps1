@@ -8,10 +8,10 @@ ForEach ($server in (get-content "C:\Temp\Servers move to OU\serverlist.txt"))
 	$asrv = $server.Split('/')
 	$asrvd = $asrv[0].Split('.')
 	$compl = ',DC='+$asrvd[0]+',DC='+$asrvd[1]
-	$n = $asrv.Count - 1
+	$n = $asrv.Count - 2
 	$scn = $asrv[$asrv.Count-1]
 	$oul = ''
-	for($i=1; $i -lt $n; $i++){
+	for($i=$n; $i -ge 1; $i--){
 		
 		if($asrv[$i] -eq "Computers") {
 			$ou = ',CN='+$asrv[$i]
