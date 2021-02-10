@@ -1,10 +1,4 @@
- my tel: 224-931-7360
-7707360
-L80934
-
-EMPL 885550
-
-XyiTebe75(
+ my tel: 
 \\munhrd1\serverengops
 some info there \\munhrd1
 --------------------------------------------- Servers in endpoint OU
@@ -14,9 +8,6 @@ medline.com/Special/Groups/Security/Terminal Services or RDP/SD-TS-US_Servers-Ad
 SD-TS-US_Servers-ReadOnly-Users
 
 medline.com/Special/Groups/Security/Terminal Services or RDP/SD-TS-US_Servers-Admin
-SD-TS-US_Servers-ReadOnly-Users
-
-GPO-US-Server_ReadOnly-Users
 
 Event Log Readers
 Members of this group can read event logs from local machine
@@ -24,44 +15,6 @@ Performance Monitor Users
 Members of this group can access performance counter data locally and remotely
 Remote Desktop Users
 Members in this group are granted the right to logon remotely
-
-medline.com/Servers/US_Servers/US_Mundelein_IL/DevTst Servers
-testw2016
-testw2012
---
-CA_Mississauga_ON		 	 
-CA15_Toronto_CA		 	 
-MX_Ammar_Calkini		 	 
-MX_Karims_Campeche		 	 
-MX_Merida		 	 
-MX_Mexicali		 	 
-MX_Mexico_City		 	 
-MX_Nuevo_Laredo		 	 
-US_Servers	
---
- GPO-Disable-SMBv1
- GPO-Disable-NETBT-LLMNR-DEV_TST
- GPO-US-Server-RDP_Session_Timeouts
- GPO-US-Server-ReduceCachedLogins
- RDP_Max_Session_Time
- GPO-Disable-NETBT-LLMNR-PRD-Mundelein
- GPO-US-WindowsUpdate_Control-
- GPO-US-Server-RDP_Session_Timeouts
- GPO-US-Server-ReduceCachedLogins
- GPO-ALL-Nexpose-Admin				Administrators add MEDLINE-NT\svc_prd_nexpose
- FirewallPolicy_Server
- GPP-Server-Delete-AutoUnattend-xml-old - 
- ServiceAccountDenyInteractiveLogon
- RDP_local_resource _disable -
- GPO-US-Server_EULA_Banner
- Enable-PowerShell_Remoting -
- GPO-ALL-ThirdPartyCATrusts
- GPO-US-RDSLicensing
- GPO-US-Server_Power_Settings -
- GPO-ALL-Services-RemoteRegistry
- Med_Strict_Password_Policy_SpecOps
- Default Domain Policy
- Local Group Policy
 
 
 -------------------------------------------- Domain Diagram
@@ -88,28 +41,10 @@ certutil.exe to see all CA
     If you're unsure which ones to run, stick to just Enable_TLSv12 as it adds function, but does not take any away.  It would be the safest way to proceed.
 
 ----------------------------------- NPS migration in Centurion
-MEDLINE-NT\pa-vmarzarella
-\\CHQPRDDC01\c$
-
-\\munhrd1\serverengops\Matt's CMP files
-Centurionmo.com <> Dylan Tupy DA there
 -
-W90SVED01
-W01SVDC02 (P01SVWDC04
-P50SVDC01
-P80SVDC01
 
-CHQSVDCW02 has 5 fismo
-
-CHQSVDC04 10.1.1.11   GC CHQ	CHQSVDCW04 10.1.1.36
-CHQSVDC03 10.1.1.10   GC CHQ	CHQSVDCW02 10.1.1.33 prateek pathik
-W01SVDC01 172.17.0.10 GC P001	P01SVDCW03 172.17.0.92 ?  
-
-??? P01SVWDC03 10.90.210.10 /
-
-Error from 10.1.1.164 chqsvvsan04 chqsvsec04 nexpose/rapid7
 in Centurion ESX Farm
-CENTURION\pa-erudakov
+
 NPS
 Password Policy enforcer 8
 EMC Avamar/NetWorker
@@ -152,17 +87,11 @@ EU - G-EU-ServerSystems
 
 Get-PasswordPolicyAffectingUser Basten| Format-List
 Get-PasswordPolicyAffectingUser 'John.Doe@acme.org' | Format-List
-takashi.yamashita
-pa-takashi.yamashita
-Yamashita, Takashi
 
-GPO-APAC-PasswordPolicy-JP
-Med_Strict_Password_Policy_SpecOps
 
 my client 6.2.31205.1 server 6.4.60516.1
 \\medline.com\SYSVOL\medline.com\Policies\PolicyDefinitions\en-us
 
-RD-EMEA-GPO-Specops-Edit
 -------------------------------------------------------------------
 This is an automatically generated message, please do not reply to this email. Your PA account logon password is about to expire and needs to be updated.***For your convenience please use the link below to reset your password***Just as a reminder it’s best practice to never sign into a PC with a PA account for security reasons.https://munprdprs01.medline.com/PasswordResetServerYour new password must meet the following requirements:- Must contain at least 8 characters- Must contain at least 1 uppercase letter- Must contain at least 1 lowercase letter- Must contain at least 1 digit- Must contain at least 1 special character- Must not contain words from the password dictionary- Must not repeat any of your previous 6 passwordsPlease note if your password expires you will be unable to login to the system. If you require assistance with updating your password please contact Helpdesk@medline.com.
 -------------------------------------------------------------------
@@ -179,38 +108,6 @@ medline.com/Special/Test/Mapping Drive Test/L80934
 
 GPRESULT /R
 Get-WinEvent -LogName "Microsoft-Windows-GroupPolicy/Operational" –MaxEvents 50 | Out-GridView
-
-Users in US_LRD_Laredo_Tx
-US_E47_Laredo_TX
-Map U drive to \\M197PRDFP1\Users
-Map G drive to \\M197PRDFP1\Groups
-Map S drive to \\M197PRDFP1\Shared
-F:\\MEXFP1\MEDLINE
-W:\\WILLOW\SPT
-\\medline.com\files\M197\Groups
-
-GPO-US-DriveMaps-LRD_Laredo_Tx
-\\medline.com\files\M197
-{B01B71D9-01A3-448F-9F0D-DF6752C8B659}
-Rovillanueva
-L72109
-
-
-Users in US_Glens_Falls_NY
-Map U drive to \\M192PRDFP1\Users
-\\medline.com\files\M192\Users
-Map G drive to \\M192PRDFP1\Groups
-Map S drive to \\M192PRDFP1\Shared
-
-\\medline.com\files\M192\Shared
-{424C0EF0-10E8-408E-A7F2-A53E85EA1C13}
-GPO-US-DriveMaps-Glens_Falls_NY
-Jeff Holcomb
-jholcomb
-L69486
-
-\\medline.com\NETLOGON\Login.bat
-C:\Windows\SYSVOL\sysvol\medline.com\scripts
 
 Glen fall could have all drives mapped. Laredo - some users may have U drive - skip it or do not override.
 Matt Stang - contact from VMaza
